@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome</title>
+  <!-- CSS only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  <link rel="stylesheet" href="./index.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+</head>
+
+<body>
+  <div class="w-75 mx-auto vh-100 d-flex flex-column py-3">
+    <form class="row rounded-3 w-100 p-3 bg-light" action="/" method="post" enctype="multipart/form-data"
+      style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+      <div class="col-4">
+        <p class="fs-3">Hình ảnh</p>
+        <label class="img-picker" for="choose-img" id="preview-img">
+          <span class="material-symbols-outlined fs-1">
+            photo_camera
+          </span>
+        </label>
+        <input type="file" accept="image/*" name="image" hidden id="choose-img" />
+      </div>
+      <div class="col-8">
+        <div class="mb-3">
+          <label for="ma_sp" class="form-label">Mã sản phẩm</label>
+          <input type="text" class="form-control" name="ma_sp" placeholder="Nhập mã sản phẩm" />
+        </div>
+        <div class="mb-3">
+          <label for="ten_sp" class="form-label">Tên sản phẩm</label>
+          <input type="text" class="form-control" name="ten_sp" placeholder="Nhập tên sản phẩm" />
+        </div>
+        <div class="mb-3">
+          <label for="so_luong" class="form-label">Số lượng</label>
+          <input type="text" class="form-control" name="so_luong" placeholder="Nhập số lượng" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
+    </form>
+    <div class="item-renderer flex-grow-1 overflow-auto mt-3 bg-light rounded-3 p-3"
+      style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; height: 1vh;">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Mã sản phẩm</th>
+            <th scope="col">Tên sản phẩm</th>
+            <th scope="col">Số lượng</th>
+            <th scope="col">Hình ảnh</th>
+            <th scope="col">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let i=0; i < data.length; i++) { %>
+            <tr>
+              <th scope="row">
+                <%=i + 1%>
+              </th>
+              <td>
+                <%=data[i].ma_sp%>
+              </td>
+              <td>
+                <%=data[i].ten_sp%>
+              </td>
+              <td>
+                <%=data[i].so_luong%>
+              </td>
+              <td>
+                <img height="50px" src="<%=data[i].hinh_anh%>" />
+              </td>
+              <td>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="handleEdit({
+                  ma_sp: '<%=data[i].ma_sp%>',
+                  ten_sp: '<%=data[i].ten_sp%>',
+                  so_luong: '<%=data[i].so_luong%>',
+                  hinh_anh: '<%=data[i].hinh_anh%>'
+                })">
+                  <span class="material-symbols-outlined">
+                    edit
+                  </span>
+                </button>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop2" onclick="handleDelete({
+                  ma_sp: '<%=data[i].ma_sp%>',
+                  ten_sp: '<%=data[i].ten_sp%>',
+                  so_luong: '<%=data[i].so_luong%>',
+                  hinh_anh: '<%=data[i].hinh_anh%>'
+                })">
+                  <span class="material-symbols-outlined">
+                    delete
+                  </span>
+                </button>
+              </td>
+            </tr>
+            <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+      <div class="modal-content">
+        <form id="editForm" class="d-flex flex-column justify-content-evenly w-100 p-3" action="/" method="post"
+          enctype="multipart/form-data">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Chỉnh sửa sản phẩm</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body row">
+            <div class="col-4">
+              <p class="fs-3">Hình ảnh</p>
+              <label class="img-picker" for="edit-choose-img" id="edit-preview-img">
+                <span class="material-symbols-outlined fs-1">
+                  photo_camera
+                </span>
+              </label>
+              <input type="file" accept="image/*" name="image" hidden id="edit-choose-img" />
+            </div>
+            <div class="col-8 ps-4">
+              <div class="mb-3">
+                <label for="maInput" class="form-label">Mã sản phẩm</label>
+                <input type="text" class="form-control" id="maInput" name="ma_sp" placeholder="Nhập mã sản phẩm" />
+              </div>
+              <div class="mb-3">
+                <label for="tenInput" class="form-label">Tên sản phẩm</label>
+                <input type="text" class="form-control" id="tenInput" name="ten_sp" placeholder="Nhập tên sản phẩm" />
+              </div>
+              <div class="mb-3">
+                <label for="soLuong" class="form-label">Số lượng</label>
+                <input type="text" class="form-control" id="soLuong" name="so_luong" placeholder="Nhập số lượng" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <form id="deleteForm" class="d-flex flex-column justify-content-evenly w-100 p-3" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Xóa sản phẩm</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Xác nhận xóa sản phẩm ?
+            <input disabled id="spanMa" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" class="btn btn-danger">Xóa</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  const editForm = document.getElementById('editForm')
+  const deleteForm = document.getElementById('deleteForm')
+  const editFormMa = document.getElementById('maInput')
+  const editFormTen = document.getElementById('tenInput')
+  const editFormSL = document.getElementById('soLuong')
+  const editFormHA = document.getElementById('edit-choose-img')
+  const spanMa = document.getElementById('spanMa')
+  const previewImg = document.getElementById('preview-img')
+  const imgPicker = document.getElementById('choose-img')
+  const editPreviewImg = document.getElementById('edit-preview-img')
+
+  imgPicker.addEventListener('change', (e) => {
+    const file = e.target.files[0]
+    setPreviewImg(URL.createObjectURL(file))
+  })
+
+  editFormHA.addEventListener('change', e => {
+    const file = e.target.files[0]
+    setPreviewImg(URL.createObjectURL(file), editPreviewImg)
+  })
+
+  const handleEdit = (sp) => {
+    editForm.setAttribute('action', `/edit/${sp.ma_sp}`)
+    editFormMa.setAttribute('value', sp.ma_sp)
+    editFormMa.setAttribute('disabled', true)
+    editFormTen.setAttribute('value', sp.ten_sp)
+    editFormSL.setAttribute('value', sp.so_luong)
+    editFormHA.setAttribute('value', sp.hinh_anh)
+    setPreviewImg(sp.hinh_anh, editPreviewImg)
+  }
+
+  const setPreviewImg = (url, df = previewImg) => {
+    df.style.backgroundImage = `url(${url})`
+    df.style.backgroundSize = 'cover'
+    df.style.backgroundPosition = 'center'
+  }
+
+  const handleDelete = (sp) => {
+    deleteForm.setAttribute('action', `/delete/${sp.ma_sp}`)
+    spanMa.setAttribute('value', sp.ma_sp)
+  }
+</script>
+
+</html>
